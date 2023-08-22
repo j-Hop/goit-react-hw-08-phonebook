@@ -1,13 +1,16 @@
 // import PropTypes from 'prop-types';
-import css from './Contact.module.css';
+import css from './ContactList.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectContacts, selectFilter } from 'redux/selectors';
+import { selectContacts, selectFilter } from 'redux/contacts/selectors';
 import { useCallback, useEffect } from 'react';
-import { deleteContact, fetchContacts } from 'redux/operations';
+import { deleteContact, fetchContacts } from 'redux/authentificated/operations';
+import { selectAuthentificated } from 'redux/authentificated/authSelectors';
+// import { deleteContact, fetchContacts } from 'redux/contacts/operations';
 
 export const ContactList = () => {
   const contacts = useSelector(selectContacts);
   const filter = useSelector(selectFilter);
+  const authentificated = useSelector(selectAuthentificated);
 
   const dispatch = useDispatch();
 
@@ -17,8 +20,9 @@ export const ContactList = () => {
   );
 
   useEffect(() => {
+    if (!authentificated) return;
     getApiContacts();
-  }, [getApiContacts]);
+  }, [getApiContacts, authentificated]);
 
   const onRemoveContact = contactId => dispatch(deleteContact(contactId));
 
@@ -26,7 +30,7 @@ export const ContactList = () => {
     return contacts?.filter(
       contact =>
         contact.name.toLowerCase().includes(filter.toLowerCase()) ||
-        contact.phone.toLowerCase().includes(filter.toLowerCase())
+        contact.number.toLowerCase().includes(filter.toLowerCase())
     );
   };
 
@@ -36,11 +40,11 @@ export const ContactList = () => {
 
   return (
     <ul className={css.list}>
-      {getFilteredContacts().map(({ id, name, phone }) => {
+      {getFilteredContacts().map(({ id, name, number }) => {
         return (
           <li className={css.items} key={id}>
             <p>{name} </p>
-            <p>: {phone}</p>
+            <p>: {number}</p>
             <button type="button" onClick={() => onRemoveContact(id)}>
               Delete
             </button>

@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {
+  addContact,
+  deleteContact,
+  fetchContacts,
+} from 'redux/authentificated/operations';
 // import bookContacts from '../data/bookContacts';
-import { fetchContacts, addContact, deleteContact } from './operations';
 
 const initialState = {
   contacts: {
@@ -23,6 +27,8 @@ const contactsStorageSlice = createSlice({
   },
   extraReducers: builder =>
     builder
+
+      //----------------GET ALL CONTACTS----------------
       .addCase(fetchContacts.pending, state => {
         state.contacts.isLoading = true;
         state.contacts.error = null;
@@ -35,6 +41,8 @@ const contactsStorageSlice = createSlice({
         state.contacts.isLoading = false;
         state.contacts.error = action.payload;
       })
+
+      //----------------ADD NEW CONTACT----------------
       .addCase(addContact.pending, state => {
         state.contacts.isLoading = true;
         state.contacts.error = null;
@@ -47,6 +55,7 @@ const contactsStorageSlice = createSlice({
         state.contacts.isLoading = false;
         state.contacts.error = action.payload;
       })
+      //----------------DELETE CONTACT----------------
       .addCase(deleteContact.pending, state => {
         state.contacts.isLoading = true;
         state.contacts.error = null;
@@ -65,3 +74,35 @@ const contactsStorageSlice = createSlice({
 
 export const { setFilter } = contactsStorageSlice.actions;
 export const contactsStorageReducer = contactsStorageSlice.reducer;
+
+// export const contactsStorageReducer = (state = initialState, action) => {
+//   switch (action.type) {
+//     case 'contactsStorage/setContacts': {
+//       return {
+//         ...state,
+//         contacts: action.payload,
+//       };
+//     }
+//     case 'contactsStorage/setFilter': {
+//       return {
+//         ...state,
+//         filter: action.payload,
+//       };
+//     }
+//     default:
+//       return state;
+//   }
+// };
+// export const setContacts = payload => {
+//   return {
+//     type: 'contactsStorage/setContacts',
+//     payload,
+//   };
+// };
+
+// export const setFilter = payload => {
+//   return {
+//     type: 'contactsStorage/setFilter',
+//     payload,
+//   };
+// };
